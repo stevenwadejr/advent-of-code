@@ -3,52 +3,35 @@ ini_set('memory_limit', '16384M');
 
 require_once __DIR__ . '/LinkedList.php';
 
-$totalFish = 0;
-
-class Lanternfish
-{
-    public function __construct(private int $timer = 8)
-    {
-    }
-
-    public function advanceDay(): void
-    {
-        if ($this->timer === 0) {
-            $this->timer = 6;
-            return;
-        }
-
-        $this->timer--;
-    }
-
-    public function canSpawn(): bool
-    {
-        return $this->timer === 0;
-    }
-}
+$totalDays = 256;
+$fish = [];
 
 foreach (explode(',', file_get_contents(__DIR__ . '/input/6.txt')) as $age) {
-    $totalDays = 256;
-    $list = new LinkedList();
-    $list->append(new Lanternfish((int) trim($age)));
+    $age = (int) trim($age);
+    $fish[$age] = ($fish[$age] ?? 0) + 1;
+}
 
-    while ($totalDays > 0) {
+while ($totalDays > 0) {
+    $temp = [];
+    $readyToSpawn = $fish[0] ?? 0;
+    $newFish = $readyToSpawn;
 
-        foreach ($list->each() as $node) {
-            $lanternFish = $node->data;
-            if ($lanternFish->canSpawn()) {
-                $list->append(new Lanternfish());
-            }
 
-            $lanternFish->advanceDay();
+    for ($i = 8; $i >= 0; $i--) {
+        if ($i === 0) {
+            $temp[8] = $newFish;
+            $temp[6] = ($temp[6] ?? 0) + $readyToSpawn;
+        } else {
+            $temp[$i - 1] = $fish[$i] ?? 0;
         }
-
-        $totalDays--;
     }
 
-    $totalFish += $list->size();
-    unset($list);
+    $fish = $temp;
+
+    $totalDays--;
 }
+
+$totalFish = array_sum($fish);
 
 
 echo "How many lanternfish would there be after 256 days? $totalFish\n";
