@@ -1,7 +1,4 @@
 <?php
-ini_set('memory_limit', '16384M');
-
-require_once __DIR__ . '/LinkedList.php';
 
 $totalDays = 256;
 $fish = [];
