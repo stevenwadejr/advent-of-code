@@ -14,10 +14,10 @@ class InputReader
         fclose($this->handle);
     }
 
-    public function loop(callable $fn)
+    public function loop(callable $fn, bool $trim = true)
     {
         while (($line = fgets($this->handle)) !== false) {
-            $fn(trim($line));
+            $fn($trim ? trim($line) : $line);
         }
     }
 }
