@@ -4,7 +4,7 @@ class InputReader2
 {
     private $handle;
 
-    public function __construct(string $fileName)
+    public function __construct(private string $fileName)
     {
         $this->handle = fopen($fileName, "r");
     }
@@ -19,5 +19,12 @@ class InputReader2
         while (($line = fgets($this->handle)) !== false) {
             yield $trim ? trim($line) : $line;
         }
+    }
+
+    public function wholeFile(bool $trim = true): string
+    {
+        return $trim
+            ? trim(file_get_contents($this->fileName))
+            : file_get_contents($this->fileName);
     }
 }
