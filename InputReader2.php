@@ -27,4 +27,30 @@ class InputReader2
             ? trim(file_get_contents($this->fileName))
             : file_get_contents($this->fileName);
     }
+
+    public function csv(): Generator
+    {
+        $contents = $this->wholeFile();
+
+        $size = strlen($contents);
+        $pos = 0;
+
+        while ($pos < $size) {
+            $end = strpos($contents, ',', $pos);
+            if ($end === false) {
+                $cur = substr($contents, $pos);
+                if (strlen($cur) > 0) {
+                    yield $cur;
+                }
+                break;
+            }
+
+            $cur = substr($contents, $pos, $end - $pos);
+            if (strlen($cur) > 0) {
+                yield $cur;
+            }
+
+            $pos = $end + 1;
+        }
+    }
 }
