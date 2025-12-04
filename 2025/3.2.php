@@ -11,31 +11,46 @@ foreach ($reader->lines() as $line) {
     $totalJoltage += $joltage;
 }
 
+// Final solution reached via ChatGPT because I spent many hours and attempts
+// on this and instead of wracking my brain forever and giving up, I'd like to
+// learn something new, so let AI teach me.
 function findJoltage(array $bank): int
 {
     $finalSize = 12;
-    $dropsAllowed = count($bank) - $finalSize;
-    $dropsPerformed = 0;
-    foreach ($bank as $index => $battery) {
-        $next = $bank[$index + 1] ?? 0;
-        if ($next > $battery && $dropsPerformed < $dropsAllowed) {
-            unset($bank[$index]);
-            $dropsPerformed++;
+    $n = count($bank);
+    $dropsAllowed = $n - $finalSize;
+    $dropsLeft = $dropsAllowed;
+
+    $result = [];
+
+    foreach ($bank as $digit) {
+        // While the last chosen digit is smaller than the current one,
+        // and we still have drops left, drop from the end of the result.
+        while (!empty($result)
+            && end($result) < $digit
+            && $dropsLeft > 0
+        ) {
+            array_pop($result);
+            $dropsLeft--;
         }
+
+        $result[] = $digit;
     }
 
-    $lowest = 1;
-    while (count($bank) > 12) {
-        foreach ($bank as $index => $battery) {
-            if ($battery === $lowest && $dropsPerformed < $dropsAllowed) {
-                unset($bank[$index]);
-                $dropsPerformed++;
-            }
-        }
-        $lowest++;
+    // If we still have drops left (e.g. digits were non-increasing),
+    // drop from the end.
+    while ($dropsLeft > 0) {
+        array_pop($result);
+        $dropsLeft--;
     }
 
-    return (int)  implode('', $bank);
+    // Now we might have more than 12 digits (if input was longer).
+    // Take only the first 12.
+    $result = array_slice($result, 0, $finalSize);
+
+    return (int) implode('', $result);
 }
+
+// $totalJoltage = number_format($totalJoltage, thousands_separator: '');
 
 echo "Total output joltage = $totalJoltage\n";
