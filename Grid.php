@@ -46,4 +46,13 @@ class Grid
             echo "\n";
         }
     }
+
+    public function replaceCell(Position $position, mixed $value): void
+    {
+        if (!isset($this->grid[$position->y][$position->x])) {
+            throw new InvalidArgumentException('Cell position not found in the grid');
+        }
+
+        $this->grid[$position->y][$position->x] = $value;
+    }
 }
