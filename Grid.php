@@ -4,6 +4,36 @@ class Grid
 {
     public function __construct(protected array $grid = []) {}
 
+    public function column(int $colNum): array
+    {
+        if ($colNum <= 0 || $colNum > count($this->grid[0] ?? [])) {
+            throw new InvalidArgumentException('Column number is out of bounds');
+        }
+
+        $column = [];
+        foreach ($this->grid as $row) {
+            $column[] = $row[$colNum - 1];
+        }
+
+        return $column;
+    }
+
+    public function columns(bool $stream = true): Generator|array
+    {
+        $columns = [];
+        for ($i = 1; $i <= count($this->grid[0]); $i++) {
+            if ($stream) {
+                yield $this->column($i);
+            } else {
+                $columns[] = $this->column($i);
+            }
+        }
+
+        if (!$stream) {
+            return $columns;
+        }
+    }
+
     public function addRow(array $row): void
     {
         $this->grid[] = $row;
