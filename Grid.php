@@ -97,4 +97,14 @@ class Grid
 
         $this->grid[$position->y][$position->x]->value = $value;
     }
+
+    public function numRows(): int
+    {
+        return count($this->grid);
+    }
+
+    public function numCols(): int
+    {
+        return count($this->grid[0] ?? []);
+    }
 }
