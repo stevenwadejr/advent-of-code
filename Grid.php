@@ -36,7 +36,19 @@ class Grid
 
     public function addRow(array $row): void
     {
-        $this->grid[] = $row;
+        $newRowIndex = count($this->grid);
+        $toInsert = [];
+        
+        foreach ($row as $index => $val) {
+            $toInsert[] = $val instanceof Cell
+                ? $val
+                : new Cell(
+                    $val,
+                    new Position($index, $newRowIndex)
+                );
+        }
+
+        $this->grid[] = $toInsert;
     }
 
     public function walk(callable $callback): void
@@ -83,6 +95,6 @@ class Grid
             throw new InvalidArgumentException('Cell position not found in the grid');
         }
 
-        $this->grid[$position->y][$position->x] = $value;
+        $this->grid[$position->y][$position->x]->value = $value;
     }
 }

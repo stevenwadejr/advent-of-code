@@ -3,6 +3,7 @@
 require_once __DIR__ . '/InputReader2.php';
 require_once __DIR__ . '/Neighbor.php';
 require_once __DIR__ . '/Position.php';
+require_once __DIR__ . '/Cell.php';
 require_once __DIR__ . '/Grid.php';
 
 $callerScript = array_shift($argv);
